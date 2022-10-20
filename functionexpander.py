@@ -1,18 +1,25 @@
 import string
 
-class userDefinedFunction:
-    def __init__(self, functionName, functionVars, functionLines):
-            self.name = functionName
-            self.vars = functionVars
-            self.lines = functionLines
-
 def checkVar(varIndex, varName, strInput):
     varNameLength = len(varName)
     strInputProcessed = " " + strInput + " "
     strOperation = strInputProcessed[varIndex:varIndex + varNameLength + 2]
-    if not(strOperation[0] in string.ascii_lowercase) and not(strOperation[-1] in string.ascii_lowercase) and strOperation[1:-1] == varName:
+    if not(strOperation[0] in string.ascii_lowercase) and not(strOperation[-1] in string.ascii_lowercase) and strOperation[1:-1] == varName and checkQuoteCount(strInput, varIndex):
         return True
     else:
+        return False
+
+def checkQuoteCount(strInput, indexInput):
+    count1 = 0
+    count2 = 0
+    for index in range(indexInput):
+        if strInput[index] == "'":
+            count1 += 1
+        if strInput[index] == '"':
+            count2 += 1
+    if count1%2 == 0 and count2%2 == 0:
+        return True
+    else: 
         return False
 
 def findIndentLevel(strInput):
