@@ -110,7 +110,22 @@ def replaceByIndex(replacerInput, replaceeInput, strInput, replaceeIndex):
     
 
 def replaceVars(varNamesInput, varValuesInput, strInput):
-    return
+    strOp = strInput
+    count = 0
+    for value in varValuesInput:
+        cursorIndex = 0
+        strLength = len(strOp)
+        valueLength = len(value)
+        while cursorIndex < strLength - valueLength:
+            varName = varNamesInput[count]
+            testStr = strOp[cursorIndex:cursorIndex + valueLength]
+            if testStr == value:
+                replaceByIndex(value, varName, strOp, cursorIndex)
+                
+            cursorIndex += 1
+            strLength = len(strOp)
+        count += 1
+    return strOp
 
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
@@ -132,6 +147,12 @@ for index in functionIndices:
     functionLines = []
     for line in functionLinesIndents:
         functionLines.append(removeIndent(line))
+        
+    cursorIndex = 0
+    
+    while cursorIndex < len(inFileArray):
+        
+        
     
     print(functionName)
     print(functionVars)
