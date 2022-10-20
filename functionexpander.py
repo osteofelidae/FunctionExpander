@@ -55,7 +55,26 @@ def findFunctionLines(fileArrayInput, indexInput):
         arrayOutput.append(fileArrayInput[cursorIndex])
         cursorIndex += 1
     return arrayOutput
-    
+
+def findFunctionDefLines(fileArrayInput):
+    arrayOutput = []
+    findingFunction = False
+    indentLevel = 0
+    count = 0
+    for line in fileArrayInput:
+        if findingFunction == True and indentLevel < findIndentLevel(line):
+            arrayOutput.append(count)
+        else:
+            indentLevel = False
+        if removeSpaces(line[0:3]) == "def":
+            indentLevel = findIndentLevel(line)
+            findingFunction = True
+            arrayOutput.append(count)
+        count += 1
+    return arrayOutput
+        
+            
+
 def findFunctionIndices(fileArrayInput):
     cursorIndex = 0
     arrayOutput = []
@@ -103,6 +122,23 @@ def findFunctionVars(strInput):
         cursorIndex += 1
     return arrayOutput
 
+def findFunctionVarsActual(strInput):
+    strOp = removeSpaces(strInput)
+    arrayOutput = []
+    bracketIndex = strOp.index("(")
+    strOp = strOp[bracketIndex+1:-1]
+    commaIndices = findCommaIndices(strOp)
+    commaIndices.insert(0, -1)
+    commaIndices.append(len(strOp))
+    cursorIndex = 1
+    while cursorIndex < len(commaIndices):
+        startIndex = commaIndices[cursorIndex-1]
+        stopIndex = commaIndices[cursorIndex]
+        varName = strOp[startIndex+1:stopIndex]
+        arrayOutput.append(varName)
+        cursorIndex += 1
+    return arrayOutput
+
 def replaceByIndex(replacerInput, replaceeInput, strInput, replaceeIndex):
     strOp = strInput
     strOp = strOp[:replaceeIndex] + replacerInput + strOp[replaceeIndex + len(replaceeInput):] #START HERE
@@ -126,6 +162,32 @@ def replaceVars(varNamesInput, varValuesInput, strInput):
         count += 1
     return strOp
 
+def findFunctionInLine(functionInput, strInput):
+    arrayOutput = []
+    functionLength = len(functionInput)
+    cursorIndex = 0
+    while cursorIndex < len(strInput) - functionLength:
+        if strInput[cursorIndex : cursorIndex + functionLength] == functionInput:
+            arrayOutput.append(cursorIndex)
+        cursorIndex += 1
+    return arrayOutput
+
+def findFunctionActual(strInput, indexInput):
+    cursorIndex = indexInput
+    bracketsCount = 0
+    while strInput[cursorIndex] != "(":
+        cursorIndex += 1
+    cursorIndex += 1
+    bracketsCount += 1
+    while bracketsCount > 0:
+        if strInput[cursorIndex] == "(":
+            bracketsCount += 1
+        elif strInput[cursorIndex] == ")":
+            bracketsCount -= 1
+        cursorIndex += 1
+    return cursorIndex
+    
+
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
 
@@ -138,6 +200,7 @@ inFileArray.append("#END OF FILE")
 inFileArray = removeNextLine(inFileArray)
 
 functionIndices = findFunctionIndices(inFileArray)
+functionDefIndices = findFunctionDefLines(inFileArray)
 
 for index in functionIndices:
     functionName = findFunctionName(removeIndent(inFileArray[index]))
@@ -147,15 +210,27 @@ for index in functionIndices:
     for line in functionLinesIndents:
         functionLines.append(removeIndent(line))
         
-    cursorIndex = 0
-    
+    print("")
+    print(functionName)
+    print("")
+    #print(functionVars)
+    #print(functionLines)
+    count = 0
+    for line in inFileArray:
+        #print(findFunctionInLine(functionName, line))
+        if not(count in functionDefIndices):
+            functionIndicesInLine = findFunctionInLine(functionName, line)
+            for index2 in functionIndicesInLine:
+                startIndex = index2
+                endIndex = findFunctionActual(line, index2)
+                print(findFunctionVarsActual(line[startIndex:endIndex])) # OUTPUTS function var values
+        count += 1
+            
     #TODO: find function name, find spot before var definitions, put function stuffs outputting into variable
     #replace said variable into function usage in found function
     #CONTINUE HERE
     
-    print(functionName)
-    print(functionVars)
-    print(functionLines)
+    
     
     
 
