@@ -1,3 +1,10 @@
+class userDefinedFunction:
+    def __init__(self, functionName, functionVars, functionLines):
+            self.name = functionName
+            self.vars = functionVars
+            self.lines = functionLines
+
+
 def findIndentLevel(strInput):
     spaceCount = 0
     checkIndex = 0
@@ -16,7 +23,14 @@ def removeIndent(strInput):
         strOutput = strInput
     return strOutput
 
-def findFunction(fileArrayInput, indexInput):
+def removeNextLine(arrayInput):
+    arrayOperation = arrayInput
+    for number in range(len(arrayOperation)-2):
+        item = arrayOperation[number]
+        arrayOperation[number] = item[0:-1]
+    return arrayOperation
+
+def findFunctionLines(fileArrayInput, indexInput):
     arrayOutput = []
     cursorIndex = indexInput + 1
     functionIndentLevel = findIndentLevel(fileArrayInput[indexInput])
@@ -25,7 +39,25 @@ def findFunction(fileArrayInput, indexInput):
         cursorIndex += 1
     return arrayOutput
     
+def findFunctionIndices(fileArrayInput):
+    cursorIndex = 0
+    arrayOutput = []
+    for line in fileArrayInput:
+        rawLine = removeIndent(line)
+        if rawLine [0:3] == "def":
+            arrayOutput.append(cursorIndex)
+        cursorIndex += 1
+    return arrayOutput
+
+def removeSpaces(strInput):
+    strOp = strInput.replace(" ","")
+    return strOp
     
+def findFunctionName(strInput):
+    strOp = removeSpaces(strInput)
+    bracketIndex = strOp.index("(")
+    functionName = strOp[3:bracketIndex]
+    return functionName
     
     
 
@@ -37,8 +69,15 @@ inFile = open(inFileName, "r")
 outFile = open(outFileName, "w")
 
 inFileArray = inFile.readlines()
+inFileArray.append("#END OF FILE")
 
-print(findFunction(inFileArray, 0))
+inFileArray = removeNextLine(inFileArray)
+
+functionIndices = findFunctionIndices(inFileArray)
+
+for index in functionIndices:
+    functionName = findFunctionName(inFileArray[index])
+    functionLines = findFunctionLines(inFileArray, index)
 
 
 
