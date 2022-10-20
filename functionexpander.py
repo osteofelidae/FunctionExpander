@@ -119,11 +119,8 @@ def replaceVars(varNamesInput, varValuesInput, strInput):
         varNameLength = len(varName)
         while cursorIndex < strLength - varNameLength:
             testStr = strOp[cursorIndex:cursorIndex + varNameLength]
-            print(testStr)
-            print(varName)
             if testStr == varName and checkVar(cursorIndex, varName, strOp):
                 strOp = replaceByIndex(value, varName, strOp, cursorIndex)
-                print("!!!!!!x")
             cursorIndex += 1
             strLength = len(strOp)
         count += 1
@@ -152,6 +149,8 @@ for index in functionIndices:
         
     cursorIndex = 0
     
+    #TODO: find function name, find spot before var definitions, put function stuffs outputting into variable
+    #replace said variable into function usage in found function
     #CONTINUE HERE
     
     print(functionName)
