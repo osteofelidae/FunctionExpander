@@ -59,7 +59,31 @@ def findFunctionName(strInput):
     functionName = strOp[3:bracketIndex]
     return functionName
     
-    
+def findCommaIndices(strInput):
+    strOp = removeSpaces(strInput)
+    arrayOutput = []
+    cursorIndex = 0
+    while cursorIndex < len(strOp):
+        if strOp[cursorIndex] == ",":
+            arrayOutput.append(cursorIndex)
+        cursorIndex += 1
+    return arrayOutput
+
+def findFunctionVars(strInput):
+    strOp = removeSpaces(strInput)
+    arrayOutput = []
+    bracketIndex = strOp.index("(")
+    strOp = strOp[bracketIndex+1:-1]
+    commaIndices = findCommaIndices(strOp)
+    commaIndices.insert(0, -1)
+    cursorIndex = 1
+    while cursorIndex < len(commaIndices):
+        startIndex = commaIndices[cursorIndex-1]
+        stopIndex = commaIndices[cursorIndex]
+        varName = strOp[startIndex+1:stopIndex]
+        arrayOutput.append(varName)
+        cursorIndex += 1
+    return arrayOutput
 
 
 inFileName = input("Input input file path... ")
@@ -76,8 +100,14 @@ inFileArray = removeNextLine(inFileArray)
 functionIndices = findFunctionIndices(inFileArray)
 
 for index in functionIndices:
-    functionName = findFunctionName(inFileArray[index])
-    functionLines = findFunctionLines(inFileArray, index)
+    functionName = findFunctionName(removeIndent(inFileArray[index]))
+    functionVars = findFunctionVars(removeIndent(inFileArray[index]))
+    functionLines = removeIndent(findFunctionLines(inFileArray, index))
+    
+    print(functionName)
+    print(functionVars)
+    print(functionLines)
+    
 
 
 
