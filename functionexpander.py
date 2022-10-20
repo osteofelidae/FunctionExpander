@@ -150,9 +150,7 @@ for index in functionIndices:
         
     cursorIndex = 0
     
-    while cursorIndex < len(inFileArray):
-        
-        
+    #CONTINUE HERE
     
     print(functionName)
     print(functionVars)
