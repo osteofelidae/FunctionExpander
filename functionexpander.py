@@ -115,13 +115,15 @@ def replaceVars(varNamesInput, varValuesInput, strInput):
     for value in varValuesInput:
         cursorIndex = 0
         strLength = len(strOp)
-        valueLength = len(value)
-        while cursorIndex < strLength - valueLength:
-            varName = varNamesInput[count]
-            testStr = strOp[cursorIndex:cursorIndex + valueLength]
-            if testStr == value:
-                replaceByIndex(value, varName, strOp, cursorIndex)
-                
+        varName = varNamesInput[count]
+        varNameLength = len(varName)
+        while cursorIndex < strLength - varNameLength:
+            testStr = strOp[cursorIndex:cursorIndex + varNameLength]
+            print(testStr)
+            print(varName)
+            if testStr == varName and checkVar(cursorIndex, varName, strOp):
+                strOp = replaceByIndex(value, varName, strOp, cursorIndex)
+                print("!!!!!!x")
             cursorIndex += 1
             strLength = len(strOp)
         count += 1
