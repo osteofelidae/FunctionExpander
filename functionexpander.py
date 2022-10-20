@@ -1,9 +1,19 @@
+import string
+
 class userDefinedFunction:
     def __init__(self, functionName, functionVars, functionLines):
             self.name = functionName
             self.vars = functionVars
             self.lines = functionLines
 
+def checkVar(varIndex, varName, strInput):
+    varNameLength = len(varName)
+    strInputProcessed = " " + strInput + " "
+    strOperation = strInputProcessed[varIndex:varIndex + varNameLength + 2]
+    if not(strOperation[0] in string.ascii_lowercase) and not(strOperation[-1] in string.ascii_lowercase) and strOperation[1:-1] == varName:
+        return True
+    else:
+        return False
 
 def findIndentLevel(strInput):
     spaceCount = 0
@@ -76,6 +86,7 @@ def findFunctionVars(strInput):
     strOp = strOp[bracketIndex+1:-1]
     commaIndices = findCommaIndices(strOp)
     commaIndices.insert(0, -1)
+    commaIndices.append(-1)
     cursorIndex = 1
     while cursorIndex < len(commaIndices):
         startIndex = commaIndices[cursorIndex-1]
@@ -85,6 +96,14 @@ def findFunctionVars(strInput):
         cursorIndex += 1
     return arrayOutput
 
+def replaceByIndex(replacerInput, replaceeInput, strInput, replaceeIndex):
+    strOp = strInput
+    strOp = strOp[:replaceeIndex] + replacerInput + strOp[replaceeIndex + len(replaceeInput):] #START HERE
+    return strOp
+    
+
+def replaceVars(varNamesInput, varValuesInput, strInput):
+    return
 
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
@@ -102,13 +121,16 @@ functionIndices = findFunctionIndices(inFileArray)
 for index in functionIndices:
     functionName = findFunctionName(removeIndent(inFileArray[index]))
     functionVars = findFunctionVars(removeIndent(inFileArray[index]))
-    functionLines = removeIndent(findFunctionLines(inFileArray, index))
+    functionLinesIndents = removeIndent(findFunctionLines(inFileArray, index))
+    functionLines = []
+    for line in functionLinesIndents:
+        functionLines.append(removeIndent(line))
     
     print(functionName)
     print(functionVars)
     print(functionLines)
     
-
+    
 
 
 
