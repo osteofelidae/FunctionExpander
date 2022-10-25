@@ -202,6 +202,8 @@ inFileArray = removeNextLine(inFileArray)
 functionIndices = findFunctionIndices(inFileArray)
 functionDefIndices = findFunctionDefLines(inFileArray)
 
+varNameCount = 0
+
 for index in functionIndices:
     functionName = findFunctionName(removeIndent(inFileArray[index]))
     functionVars = findFunctionVars(removeIndent(inFileArray[index]))
@@ -209,22 +211,44 @@ for index in functionIndices:
     functionLines = []
     for line in functionLinesIndents:
         functionLines.append(removeIndent(line))
-        
-    print("")
-    print(functionName)
-    print("")
-    #print(functionVars)
-    #print(functionLines)
+
+    arrayLength = len(inFileArray)
+    mainStartIndex = 0
     count = 0
-    for line in inFileArray:
-        #print(findFunctionInLine(functionName, line))
+    while count < arrayLength:
+        
         if not(count in functionDefIndices):
-            functionIndicesInLine = findFunctionInLine(functionName, line)
+            #if mainStartIndex == 0:
+            mainStartIndex = count
+            line2 = inFileArray[count]
+            functionIndicesInLine = findFunctionInLine(functionName, line2)
+            print(functionIndicesInLine)
             for index2 in functionIndicesInLine:
+ 
                 startIndex = index2
-                endIndex = findFunctionActual(line, index2)
-                print(findFunctionVarsActual(line[startIndex:endIndex])) # OUTPUTS function var values
+                endIndex = findFunctionActual(line2, index2)
+                arrayFunctionValues = findFunctionVarsActual(line2[startIndex:endIndex]) 
+                arrayReplace = []
+                for count2 in range(len(functionLinesIndents)):
+                    functionLine = functionLinesIndents[count2]
+                    arrayReplace.append(replaceVars(functionVars, arrayFunctionValues, functionLine))
+                print(arrayReplace)
+                
+                for count3 in range(len(arrayReplace)):
+                    varName = "var" + str(varNameCount)
+                    arrayReplace[count3] = varName + " = " + removeIndent(arrayReplace[count3])
+                    varNameCount += 1
+                
+                
+                for count3 in range(len(arrayReplace)):
+                    print("XX")
+                    inFileArray.insert(mainStartIndex + count3 - 1, arrayReplace[count3])
+                    count += 1
+                
+        arrayLength = len(inFileArray)
         count += 1
+for line in inFileArray:
+    print(line)
             
     #TODO: find function name, find spot before var definitions, put function stuffs outputting into variable
     #replace said variable into function usage in found function
