@@ -234,13 +234,14 @@ for index in functionIndices:
                 
                 for count3 in range(len(arrayReplace)):
                     varName = "var" + str(varNameCount)
+                    varNameCountArray.append(varName)
                     arrayReplace[count3] = removeIndent(arrayReplace[count3])
                     if arrayReplace[count3][0:6] == "return":
                         arrayReplace[count3] = arrayReplace[count3][6:]
                         arrayReplace[count3] = varName + " = " + arrayReplace[count3]
                         varNameCount += 1
                 
-                # PROBLEM HERE IN INSERTING arrayReplace into inFileArray
+                #TODO: replace functions with var names
                 
                 count4 = 0
                 for count3 in range(len(arrayReplace)):
