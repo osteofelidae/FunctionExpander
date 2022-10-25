@@ -203,6 +203,7 @@ functionIndices = findFunctionIndices(inFileArray)
 functionDefIndices = findFunctionDefLines(inFileArray)
 
 varNameCount = 0
+varNameCountArray = []
 
 for index in functionIndices:
     functionName = findFunctionName(removeIndent(inFileArray[index]))
@@ -218,11 +219,9 @@ for index in functionIndices:
     while count < arrayLength:
         
         if not(count in functionDefIndices):
-            #if mainStartIndex == 0:
             mainStartIndex = count
             line2 = inFileArray[count]
             functionIndicesInLine = findFunctionInLine(functionName, line2)
-            print(functionIndicesInLine)
             for index2 in functionIndicesInLine:
  
                 startIndex = index2
@@ -232,21 +231,28 @@ for index in functionIndices:
                 for count2 in range(len(functionLinesIndents)):
                     functionLine = functionLinesIndents[count2]
                     arrayReplace.append(replaceVars(functionVars, arrayFunctionValues, functionLine))
-                print(arrayReplace)
                 
                 for count3 in range(len(arrayReplace)):
                     varName = "var" + str(varNameCount)
-                    arrayReplace[count3] = varName + " = " + removeIndent(arrayReplace[count3])
-                    varNameCount += 1
+                    arrayReplace[count3] = removeIndent(arrayReplace[count3])
+                    if arrayReplace[count3][0:6] == "return":
+                        arrayReplace[count3] = arrayReplace[count3][6:]
+                        arrayReplace[count3] = varName + " = " + arrayReplace[count3]
+                        varNameCount += 1
                 
+                # PROBLEM HERE IN INSERTING arrayReplace into inFileArray
                 
+                count4 = 0
                 for count3 in range(len(arrayReplace)):
-                    print("XX")
-                    inFileArray.insert(mainStartIndex + count3 - 1, arrayReplace[count3])
-                    count += 1
-                
+                    inFileArray.insert(mainStartIndex, arrayReplace[count3])
+                    mainStartIndex += 1
+                    count4 += 1
+                count += count4
         arrayLength = len(inFileArray)
         count += 1
+        
+        
+        
 for line in inFileArray:
     print(line)
             
