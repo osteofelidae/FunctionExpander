@@ -186,7 +186,26 @@ def findFunctionActual(strInput, indexInput):
             bracketsCount -= 1
         cursorIndex += 1
     return cursorIndex
-    
+
+def deleteAllFunctionDef(arrayInput):
+    functionIndices = findFunctionIndices(arrayInput)
+    outputArray = []
+    checking = False
+    count = 0
+    indentLevel = 99999999
+    for line in arrayInput:
+        if checking and findIndentLevel(line) > indentLevel:
+            pass
+        else:
+            checking = False
+        if count in functionIndices:
+            checking = True
+            indentLevel = findIndentLevel(line)
+        if not(checking):
+            outputArray.append(line)
+        count += 1
+    return outputArray
+        
 
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
@@ -194,7 +213,10 @@ outFileName = input("Input output file path... ")
 inFile = open(inFileName, "r")
 outFile = open(outFileName, "w")
 
+
 inFileArray = inFile.readlines()
+inFileArray.insert(0, "#START OF FILE")
+inFileArray.insert(0, "#START OF FILE")
 inFileArray.append("#END OF FILE")
 
 inFileArray = removeNextLine(inFileArray)
@@ -262,10 +284,12 @@ for index in functionIndices:
                 count1 += 1
         arrayLength = len(inFileArray)
         count += 1
-        
-        
-        
-for line in inFileArray:
+     
+outFileArray = deleteAllFunctionDef(inFileArray)
+
+del outFileArray[0:2]
+
+for line in outFileArray:
     print(line)
     
     
