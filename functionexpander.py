@@ -203,6 +203,7 @@ functionIndices = findFunctionIndices(inFileArray)
 functionDefIndices = findFunctionDefLines(inFileArray)
 
 varNameCount = 0
+varNameCount2 = 0
 varNameCountArray = []
 
 for index in functionIndices:
@@ -217,7 +218,7 @@ for index in functionIndices:
     mainStartIndex = 0
     count = 0
     while count < arrayLength:
-        
+        lineIndentLevel = findIndentLevel(inFileArray[count])
         if not(count in functionDefIndices):
             mainStartIndex = count
             line2 = inFileArray[count]
@@ -230,7 +231,7 @@ for index in functionIndices:
                 arrayReplace = []
                 for count2 in range(len(functionLinesIndents)):
                     functionLine = functionLinesIndents[count2]
-                    arrayReplace.append(replaceVars(functionVars, arrayFunctionValues, functionLine))
+                    arrayReplace.append((" " * lineIndentLevel) +replaceVars(functionVars, arrayFunctionValues, functionLine))
                 
                 for count3 in range(len(arrayReplace)):
                     varName = "var" + str(varNameCount)
@@ -249,6 +250,16 @@ for index in functionIndices:
                     mainStartIndex += 1
                     count4 += 1
                 count += count4
+            
+            
+            
+            count1 = 0
+            while count1 < len(functionIndicesInLine):
+                startIndex2 = functionIndicesInLine[count1]
+                endIndex2 = findFunctionActual(line2, startIndex2)
+                inFileArray[count1] = inFileArray[count1][:startIndex2] + varNameCountArray[varNameCount2] + inFileArray[count1][endIndex2:]
+                varNameCount2 += 1
+                count1 += 1
         arrayLength = len(inFileArray)
         count += 1
         
@@ -256,11 +267,6 @@ for index in functionIndices:
         
 for line in inFileArray:
     print(line)
-            
-    #TODO: find function name, find spot before var definitions, put function stuffs outputting into variable
-    #replace said variable into function usage in found function
-    #CONTINUE HERE
-    
     
     
     
