@@ -65,11 +65,13 @@ def findFunctionDefLines(fileArrayInput):
         if findingFunction == True and indentLevel < findIndentLevel(line):
             arrayOutput.append(count)
         else:
-            indentLevel = False
-        if removeSpaces(line[0:3]) == "def":
+            findingFunction = False
+        if removeSpaces(line)[0:3] == "def":
             indentLevel = findIndentLevel(line)
             findingFunction = True
             arrayOutput.append(count)
+        else:
+            findingFunction = False
         count += 1
     return arrayOutput
         
@@ -231,11 +233,12 @@ varNameCountArray = []
 for index in functionIndices:
     functionName = findFunctionName(removeIndent(inFileArray[index]))
     functionVars = findFunctionVars(removeIndent(inFileArray[index]))
-    functionLinesIndents = removeIndent(findFunctionLines(inFileArray, index))
+    functionLinesIndents = findFunctionLines(inFileArray, index)
     functionLines = []
     for line in functionLinesIndents:
         functionLines.append(removeIndent(line))
-
+        
+    
     arrayLength = len(inFileArray)
     mainStartIndex = 0
     count = 0
@@ -244,9 +247,10 @@ for index in functionIndices:
         if not(count in functionDefIndices):
             mainStartIndex = count
             line2 = inFileArray[count]
-            functionIndicesInLine = findFunctionInLine(functionName, line2)
+            
+            functionIndicesInLine = findFunctionInLine(functionName, removeIndent(line2))
+            
             for index2 in functionIndicesInLine:
- 
                 startIndex = index2
                 endIndex = findFunctionActual(line2, index2)
                 arrayFunctionValues = findFunctionVarsActual(line2[startIndex:endIndex]) 
@@ -256,15 +260,14 @@ for index in functionIndices:
                     arrayReplace.append((" " * lineIndentLevel) +replaceVars(functionVars, arrayFunctionValues, functionLine))
                 
                 for count3 in range(len(arrayReplace)):
-                    varName = "var" + str(varNameCount)
-                    varNameCountArray.append(varName)
                     arrayReplace[count3] = removeIndent(arrayReplace[count3])
                     if arrayReplace[count3][0:6] == "return":
+                        varName = "var" + str(varNameCount)
+                        varNameCountArray.append(varName)
                         arrayReplace[count3] = arrayReplace[count3][6:]
                         arrayReplace[count3] = varName + " = " + arrayReplace[count3]
                         varNameCount += 1
-                
-                #TODO: replace functions with var names
+                        
                 
                 count4 = 0
                 for count3 in range(len(arrayReplace)):
